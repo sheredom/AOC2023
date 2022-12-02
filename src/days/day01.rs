@@ -1,11 +1,11 @@
 use crate::{Solution, SolutionPair};
 
-static input: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/input/day01/input"));
+static INPUT: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/input/day01/input"));
 
 ///////////////////////////////////////////////////////////////////////////////
 
 pub fn solve() -> SolutionPair {
-    solver(input)
+    solver(INPUT)
 }
 
 fn solver(data: &str) -> SolutionPair {
@@ -41,7 +41,7 @@ mod tests {
 
     use super::solver;
 
-    static example: &str = r#"
+    static EXAMPLE: &str = r#"
     1000
     2000
     3000
@@ -60,7 +60,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let solution = solver(example);
+        let solution = solver(EXAMPLE);
 
         if let (Solution::U32(p1), Solution::U32(p2)) = solution {
             assert_eq!(p1, 24000);

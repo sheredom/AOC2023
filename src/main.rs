@@ -34,10 +34,10 @@ fn main() {
         let (p1, p2) = func();
         let elapsed_ms = time.elapsed().as_nanos() as f64 / 1_000_000.0;
 
-        println!("\n=== Day {:02} ===", day);
-        println!("  · Part 1: {}", p1);
-        println!("  · Part 2: {}", p2);
-        println!("  · Elapsed: {:.4} ms", elapsed_ms);
+        println!("🎄 Day {:02}:", day);
+        println!("  🎁 Part 1: {}", p1);
+        println!("  🎁 Part 2: {}", p2);
+        println!("  ⏱️  Elapsed: {:.4} ms", elapsed_ms);
 
         runtime += elapsed_ms;
     }
