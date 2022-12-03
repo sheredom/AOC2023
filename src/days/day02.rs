@@ -27,14 +27,12 @@ fn score(opponents_move: Game, my_move: Game) -> u32 {
     if opponents_move == my_move {
         // a draw
         score += 3;
-    } else {
-        if match opponents_move {
-            Game::Rock => matches!(my_move, Game::Paper),
-            Game::Paper => matches!(my_move, Game::Scissors),
-            Game::Scissors => matches!(my_move, Game::Rock),
-        } {
-            score += 6;
-        }
+    } else if match opponents_move {
+        Game::Rock => matches!(my_move, Game::Paper),
+        Game::Paper => matches!(my_move, Game::Scissors),
+        Game::Scissors => matches!(my_move, Game::Rock),
+    } {
+        score += 6;
     }
 
     score
