@@ -37,4 +37,7 @@ Cargo.lock
 # Support for Project snippet scope
 !.vscode/*.code-snippets
 
+# macOS crap
+.DS_Store
+
 # End of https://www.toptal.com/developers/gitignore/api/rust,visualstudiocode
