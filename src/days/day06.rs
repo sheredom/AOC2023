@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 use crate::{Solution, SolutionPair};
 
 static INPUT: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/input/day06/input"));
@@ -19,8 +17,8 @@ fn solution<const COUNT: usize>(data: &str) -> Solution {
 
     let mut cache: [char; COUNT] = ['\0'; COUNT];
 
-    for i in 0..(COUNT - 1) {
-        cache[i] = chars.next().unwrap();
+    for item in cache.iter_mut().take(COUNT - 1) {
+        *item = chars.next().unwrap();
     }
 
     let mut insert_pos = COUNT - 1;
