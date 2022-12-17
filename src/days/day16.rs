@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use crate::{Solution, SolutionPair};
 use std::collections::HashMap;
 
@@ -9,36 +11,48 @@ pub fn solve() -> SolutionPair {
     solver(INPUT)
 }
 
+#[derive(Debug, Clone)]
 struct Room {
     flow: usize,
     tunnels: Vec<usize>,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Action {
     Move,
     Open,
 }
 
-fn p1(map: &HashMap<usize, Room>, start: usize) -> usize {
+fn explore(map: &HashMap<usize, Room>, start: usize, total_minutes: usize) -> usize {
     let mut cache = HashMap::new();
-    let result = p1_action((Action::Move, start), map, Vec::new(), &mut cache, 1);
-    result
+    explore_with_cache(map, &mut cache, start, total_minutes)
 }
 
-fn p2(map: &HashMap<usize, Room>, start: usize) -> usize {
-    let mut cache = HashMap::new();
-    let result = p1_action((Action::Move, start), map, Vec::new(), &mut cache, 1);
-    result
+fn explore_with_cache(
+    map: &HashMap<usize, Room>,
+    cache: &mut HashMap<(usize, Vec<usize>, usize), usize>,
+    start: usize,
+    total_minutes: usize,
+) -> usize {
+    explore_action(
+        (Action::Move, start),
+        map,
+        Vec::new(),
+        cache,
+        1,
+        total_minutes,
+    )
 }
 
-fn p1_action(
+fn explore_action(
     (action, node): (Action, usize),
     map: &HashMap<usize, Room>,
     path: Vec<usize>,
     cache: &mut HashMap<(usize, Vec<usize>, usize), usize>,
     minutes: usize,
+    total_minutes: usize,
 ) -> usize {
-    if minutes == 30 {
+    if minutes == total_minutes {
         return 0;
     }
 
@@ -51,27 +65,42 @@ fn p1_action(
             .tunnels
             .iter()
             .map(|tunnel| {
-                p1_action(
+                explore_action(
                     (Action::Open, *tunnel),
                     map,
                     path.clone(),
                     cache,
                     minutes + 1,
+                    total_minutes,
                 )
             })
             .max()
             .unwrap(),
         Action::Open => {
-            let can_open = path.iter().find(|n| **n == node).is_none();
+            let can_open = !path.iter().any(|n| *n == node);
 
-            let mut result = p1_action((Action::Move, node), map, path.clone(), cache, minutes);
+            let mut result = explore_action(
+                (Action::Move, node),
+                map,
+                path.clone(),
+                cache,
+                minutes,
+                total_minutes,
+            );
 
             if can_open && map[&node].flow != 0 {
                 let mut path = path.clone();
                 path.push(node);
 
-                let open_result = (30 - minutes) * map[&node].flow
-                    + p1_action((Action::Move, node), map, path, cache, minutes + 1);
+                let open_result = (total_minutes - minutes) * map[&node].flow
+                    + explore_action(
+                        (Action::Move, node),
+                        map,
+                        path,
+                        cache,
+                        minutes + 1,
+                        total_minutes,
+                    );
 
                 result = result.max(open_result);
             }
@@ -80,7 +109,7 @@ fn p1_action(
         }
     };
 
-    cache.insert((node, path.clone(), minutes), result);
+    cache.insert((node, path, minutes), result);
 
     result
 }
@@ -126,8 +155,40 @@ fn solver(data: &str) -> SolutionPair {
         str_map["AA"]
     };
 
-    let p1 = p1(&map, aa);
-    let p2 = p2(&map, aa);
+    let p1 = explore(&map, aa, 30);
+
+    let rooms_with_flow: Vec<_> = map
+        .iter()
+        .filter(|(_, room)| room.flow > 0)
+        .map(|(index, _)| *index)
+        .collect();
+
+    let mut p2 = 0;
+
+    for i in (rooms_with_flow.len() / 2)..=(rooms_with_flow.len() / 2) {
+        for combination in rooms_with_flow.iter().combinations(i) {
+            let combination: Vec<_> = combination.iter().map(|index| **index).collect();
+
+            let mut me_map = map.clone();
+            let mut elephant_map = map.clone();
+
+            for room_with_flow in &rooms_with_flow {
+                if combination.contains(room_with_flow) {
+                    me_map.get_mut(room_with_flow).unwrap().flow = 0;
+                } else {
+                    elephant_map.get_mut(room_with_flow).unwrap().flow = 0;
+                }
+            }
+
+            let total_minutes = 26;
+
+            // this is DIRE - but I had a headache and just bruteforced it sigh :(
+            let current =
+                explore(&me_map, aa, total_minutes) + explore(&elephant_map, aa, total_minutes);
+
+            p2 = p2.max(current);
+        }
+    }
 
     (Solution::U64(p1 as u64), Solution::U64(p2 as u64))
 }

@@ -160,7 +160,7 @@ fn solver(data: &str, p1_y: i32, p2_size: i32) -> SolutionPair {
             let len = ranges.len();
 
             for i in 0..(len - 1) {
-                let r1 = ranges[i + 1].clone();
+                let r1 = ranges[i + 1];
                 let r0 = &mut ranges[i];
 
                 if (r0.0..=r0.1).contains(&r1.0) {
