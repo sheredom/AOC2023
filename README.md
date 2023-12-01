@@ -9,4 +9,4 @@ Each day has a `solve()` function that returns a pair of `Solution`. The type `S
 
 To run: `cargo run --release [days...]`
 
-Use: `static INPUT: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/input/dayXX/input"));` each day.
+Use: `static INPUT: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/input/dayXX"));` each day.

@@ -1,6 +1,7 @@
 use std::fmt::{Display, Formatter, Result};
 use Solution::*;
 
+#[derive(Debug, Eq, PartialEq)]
 pub enum Solution {
     I32(i32),
     I64(i64),
