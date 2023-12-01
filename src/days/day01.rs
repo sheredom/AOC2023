@@ -23,13 +23,25 @@ pub fn solve2(input: &str) -> Solution {
     let mut sol2 = 0;
 
     for line in input.lines() {
-        let variants = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+        let variants = [
+            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+        ];
 
-        let first_index = variants.iter().fold(usize::MAX, |acc, x| acc.min(line.find(x).unwrap_or(usize::MAX)));
-        let first_index = first_index.min(line.find(|x: char| x.is_ascii_digit()).unwrap_or(usize::MAX));
+        let first_index = variants.iter().fold(usize::MAX, |acc, x| {
+            acc.min(line.find(x).unwrap_or(usize::MAX))
+        });
+        let first_index = first_index.min(
+            line.find(|x: char| x.is_ascii_digit())
+                .unwrap_or(usize::MAX),
+        );
 
-        let last_index = variants.iter().fold(usize::MIN, |acc, x| acc.max(line.rfind(x).unwrap_or(usize::MIN)));
-        let last_index = last_index.max(line.rfind(|x: char| x.is_ascii_digit()).unwrap_or(usize::MIN));
+        let last_index = variants.iter().fold(usize::MIN, |acc, x| {
+            acc.max(line.rfind(x).unwrap_or(usize::MIN))
+        });
+        let last_index = last_index.max(
+            line.rfind(|x: char| x.is_ascii_digit())
+                .unwrap_or(usize::MIN),
+        );
 
         let parser = |x: &str| {
             println!("Parser found '{}'", x);
@@ -53,7 +65,7 @@ pub fn solve2(input: &str) -> Solution {
             } else if x.starts_with("nine") {
                 9
             } else {
-                x.chars().nth(0).unwrap().to_digit(10).unwrap()
+                x.chars().next().unwrap().to_digit(10).unwrap()
             }
         };
 
@@ -80,13 +92,15 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let r = super::solve2(r"two1nine
+        let r = super::solve2(
+            r"two1nine
 eightwothree
 abcone2threexyz
 xtwone3four
 4nineeightseven2
 zoneight234
-7pqrstsixteen");
+7pqrstsixteen",
+        );
 
         assert_eq!(r, Solution::U32(281));
     }
