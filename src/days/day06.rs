@@ -38,9 +38,6 @@ pub fn solve1(input: &str) -> Solution {
 pub fn solve2(input: &str) -> Solution {
     let (time, distance) = input.lines().tuples().next().unwrap();
 
-    let time = time.strip_prefix("Time:").unwrap();
-    let distance = distance.strip_prefix("Distance:").unwrap();
-
     let time = time
         .chars()
         .filter(|x| x.is_ascii_digit())
@@ -49,8 +46,6 @@ pub fn solve2(input: &str) -> Solution {
         .chars()
         .filter(|x| x.is_ascii_digit())
         .fold(0, |acc, x| (acc * 10) + (x.to_digit(10).unwrap() as u64));
-
-    let mut sol = 1;
 
     let mut hits = 0;
 
@@ -62,9 +57,7 @@ pub fn solve2(input: &str) -> Solution {
         }
     }
 
-    sol *= hits;
-
-    Solution::I32(sol)
+    Solution::I32(hits)
 }
 
 pub fn solve() -> SolutionPair {
